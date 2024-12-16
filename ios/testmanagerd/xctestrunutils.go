@@ -36,6 +36,8 @@ type SchemeData struct {
 	SkipTestIdentifiers         []string       `plist:"SkipTestIdentifiers"`
 	OnlyTestIdentifiers         []string       `plist:"OnlyTestIdentifiers"`
 	IsUITestBundle              bool           `plist:"IsUITestBundle"`
+	IsXCTRunnerHostedTestBundle bool           `plist:"IsXCTRunnerHostedTestBundle"`
+	IsAppHostedTestBundle       bool           `plist:"IsAppHostedTestBundle"`
 	CommandLineArguments        []string       `plist:"CommandLineArguments"`
 	EnvironmentVariables        map[string]any `plist:"EnvironmentVariables"`
 	TestingEnvironmentVariables map[string]any `plist:"TestingEnvironmentVariables"`

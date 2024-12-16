@@ -104,6 +104,10 @@ func createAndParseXCTestRunFile(t *testing.T) XCTestRunData {
 					</array>
 					<key>IsUITestBundle</key>
 					<true/>
+					<key>IsAppHostedTestBundle</key>
+					<true/>
+					<key>IsXCTRunnerHostedTestBundle</key>
+					<false/>
 				</dict>
 				<key>__xctestrun_metadata__</key>
 				<dict>
@@ -187,6 +191,21 @@ func TestSkipTestIdentifiers(t *testing.T) {
 func TestFormatVersion(t *testing.T) {
 	xcTestRunData := createAndParseXCTestRunFile(t)
 	assert.Equal(t, 1, xcTestRunData.XCTestRunMetadata.FormatVersion, "FormatVersion mismatch")
+}
+
+func TestIsXCTRunnerHostedTestBundle(t *testing.T) {
+	xcTestRunData := createAndParseXCTestRunFile(t)
+	assert.Equal(t, false, xcTestRunData.TestConfig.IsXCTRunnerHostedTestBundle, "IsXCTRunnerHostedTestBundle mismatch")
+}
+
+func TestIsAppHostedTestBundle(t *testing.T) {
+	xcTestRunData := createAndParseXCTestRunFile(t)
+	assert.Equal(t, true, xcTestRunData.TestConfig.IsAppHostedTestBundle, "IsAppHostedTestBundle mismatch")
+}
+
+func TestIsUITestBundle(t *testing.T) {
+	xcTestRunData := createAndParseXCTestRunFile(t)
+	assert.Equal(t, true, xcTestRunData.TestConfig.IsUITestBundle, "IsUITestBundle mismatch")
 }
 
 func TestParseXCTestRunNotSupportedForFormatVersionOtherThanOne(t *testing.T) {
