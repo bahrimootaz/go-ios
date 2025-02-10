@@ -916,11 +916,6 @@ func TestConfigTestRunnerBundleId_XCTestRunFileVersion2_XCTest(t *testing.T) {
 	assert.Equal(t, "saucelabs.FakeCounterApp", testConfig.TestRunnerBundleId, "TestRunnerBundleId mismatch")
 }
 
-func TestConfigBundleId_XCTestRunFileVersion2_XCUITest(t *testing.T) {
-	testConfig, _, _ := createTestConfigFromParsedMockDataUsingXCTestRunFileV2(t, true)
-	assert.Equal(t, "saucelabs.FakeCounterApp", testConfig.BundleId, "BundleId mismatch")
-}
-
 func TestConfigXctestConfigName_XCTestRunFileVersion2_XCTest(t *testing.T) {
 	testConfig, _, _ := createTestConfigFromParsedMockDataUsingXCTestRunFileV2(t, false)
 	assert.Equal(t, "FakeCounterAppTests.xctest", testConfig.XctestConfigName, "XctestConfigName mismatch")
@@ -962,6 +957,11 @@ func TestConfigListener_XCTestRunFileVersion2_XCTest(t *testing.T) {
 func TestConfigTestRunnerBundleId_XCTestRunFileVersion2_XCUITest(t *testing.T) {
 	testConfig, _, _ := createTestConfigFromParsedMockDataUsingXCTestRunFileV2(t, true)
 	assert.Equal(t, "saucelabs.FakeCounterAppUITests.xctrunner", testConfig.TestRunnerBundleId, "TestRunnerBundleId mismatch")
+}
+
+func TestConfigBundleId_XCTestRunFileVersion2_XCUITest(t *testing.T) {
+	testConfig, _, _ := createTestConfigFromParsedMockDataUsingXCTestRunFileV2(t, true)
+	assert.Equal(t, "saucelabs.FakeCounterApp", testConfig.BundleId, "BundleId mismatch")
 }
 
 func TestConfigXctestConfigName_XCTestRunFileVersion2_XCUITest(t *testing.T) {
