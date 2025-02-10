@@ -2,6 +2,7 @@ package testmanagerd
 
 import (
 	"github.com/danielpaulus/go-ios/ios"
+	"github.com/danielpaulus/go-ios/ios/installationproxy"
 	"os"
 	"testing"
 
@@ -404,7 +405,7 @@ func createTestConfigFromParsedMockDataUsingXCTestRunFileV1(t *testing.T) (TestC
 	mockListener := &TestListener{}
 
 	// Act: Convert XCTestRunData to TestConfig
-	testConfig, err := xcTestRunData.buildTestConfig(mockDevice, mockListener)
+	testConfig, err := xcTestRunData.buildTestConfig(mockDevice, mockListener, nil)
 
 	// Assert: Validate the returned TestConfig
 	assert.NoError(t, err, "Error converting to TestConfig")
@@ -869,6 +870,18 @@ func TestIsUITestBundle_XCTestRunFileVersion2_XCUITest(t *testing.T) {
 	assert.Equal(t, true, xcTestRunData.IsUITestBundle, "IsUITestBundle mismatch")
 }
 
+func TestUITargetAppPath_XCTestRunFileVersion2_XCUITest(t *testing.T) {
+	xcTestRunData := FindParsedTestTarget(t, true)
+	assert.Equal(t, "__TESTROOT__/Debug-iphoneos/FakeCounterApp.app", xcTestRunData.UITargetAppPath, "UITargetAppPath mismatch")
+}
+
+func TestUITargetAppEnvironmentVariables_XCTestRunFileVersion2_XCUITest(t *testing.T) {
+	xcTestRunData := FindParsedTestTarget(t, true)
+	assert.Equal(t, map[string]any{
+		"APP_DISTRIBUTOR_ID_OVERRIDE": "com.apple.AppStore",
+	}, xcTestRunData.UITargetAppEnvironmentVariables, "UITargetAppEnvironmentVariables mismatch")
+}
+
 // Helper function to create testConfig from parsed mock data using .xctestrun file format v2
 // If includeUITest is true, it returns a UI test configuration.
 // If includeUITest is false, it returns a non-UI test configuration.
@@ -881,9 +894,15 @@ func createTestConfigFromParsedMockDataUsingXCTestRunFileV2(t *testing.T, includ
 		DeviceID: 8110,
 	}
 	mockListener := &TestListener{}
-
+	// Build allApps mock data to verify the getBundleID function
+	allAppsMockData := []installationproxy.AppInfo{
+		{
+			CFBundleName:       "FakeCounterApp",
+			CFBundleIdentifier: "saucelabs.FakeCounterApp",
+		},
+	}
 	// Act: Convert XCTestRunData to TestConfig
-	testConfig, err := xcTestRunData.buildTestConfig(mockDevice, mockListener)
+	testConfig, err := xcTestRunData.buildTestConfig(mockDevice, mockListener, allAppsMockData)
 
 	// Assert: Validate the returned TestConfig
 	assert.NoError(t, err, "Error converting to TestConfig")
@@ -895,6 +914,11 @@ func createTestConfigFromParsedMockDataUsingXCTestRunFileV2(t *testing.T, includ
 func TestConfigTestRunnerBundleId_XCTestRunFileVersion2_XCTest(t *testing.T) {
 	testConfig, _, _ := createTestConfigFromParsedMockDataUsingXCTestRunFileV2(t, false)
 	assert.Equal(t, "saucelabs.FakeCounterApp", testConfig.TestRunnerBundleId, "TestRunnerBundleId mismatch")
+}
+
+func TestConfigBundleId_XCTestRunFileVersion2_XCUITest(t *testing.T) {
+	testConfig, _, _ := createTestConfigFromParsedMockDataUsingXCTestRunFileV2(t, true)
+	assert.Equal(t, "saucelabs.FakeCounterApp", testConfig.BundleId, "BundleId mismatch")
 }
 
 func TestConfigXctestConfigName_XCTestRunFileVersion2_XCTest(t *testing.T) {
