@@ -260,7 +260,7 @@ func StartXCTestWithConfig(ctx context.Context, xctestrunFilePath string, device
 	svc, _ := installationproxy.New(device)
 	allApps, _ := svc.BrowseUserApps()
 
-	xcTestTargets := make([]TestConfig, len(xctestSpecification))
+	var xcTestTargets []TestConfig
 	for i, r := range xctestSpecification {
 		tc, err := r.buildTestConfig(device, listener, allApps)
 		if err != nil {
@@ -268,7 +268,7 @@ func StartXCTestWithConfig(ctx context.Context, xctestrunFilePath string, device
 				fmt.Errorf("building test config at index %d: %w", i, err),
 			}
 		}
-		xcTestTargets[i] = tc
+		xcTestTargets = append(xcTestTargets, tc)
 	}
 
 	var results []TestSuite
